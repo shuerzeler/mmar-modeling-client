@@ -10,6 +10,7 @@ import { VizrepUpdateChecker } from 'resources/services/vizrep_update_checker';
 import { GraphicContext } from 'resources/graphic_context';
 import { validate as uuidValidate } from 'uuid';
 import { FetchHelper } from 'resources/services/fetchHelper';
+import { FileUtility } from 'resources/services/file_utility';
 
 export class AttributeWindow {
 
@@ -48,7 +49,8 @@ export class AttributeWindow {
     private hybridAlgorithmsService: HybridAlgorithmsService,
     private vizrepUpdateChecker: VizrepUpdateChecker,
     private gc: GraphicContext,
-    private fetchHelper: FetchHelper
+    private fetchHelper: FetchHelper,
+    private fileUtility: FileUtility
   ) {
   }
 
@@ -57,13 +59,47 @@ export class AttributeWindow {
     this.eventAggregator.subscribe('removeAttributeGui', await this.delayedReset.bind(this));
     this.eventAggregator.subscribe('gltfUploaded', async payload => { await this.gltfUploaded(payload) });
     this.eventAggregator.subscribe('imageUploaded', async payload => { await this.imageUploaded(payload) });
+    let buttons = document.querySelectorAll("mdc-button");
+    buttons.forEach(button => {
+      button.addEventListener("click", (event) => {
+        event.preventDefault();
+      });
+    });
   }
 
   async deleteFile(attributeInstance: AttributeInstance) {
     if (this.isUUID(attributeInstance.value)) {
       await this.fetchHelper.deleteFileByUUID(attributeInstance.value);
+      this.metaUtility.deleteFileByUUID(attributeInstance.value);
       const metaAttribute: Attribute = await this.metaUtility.getMetaAttribute(attributeInstance.uuid_attribute);
       attributeInstance.value = metaAttribute.default_value;
+    }
+  }
+
+  async downloadFile(attributeInstance: AttributeInstance) {
+    if (this.isUUID(attributeInstance.value)) {
+      let file = this.metaUtility.getFileByUUID(attributeInstance.value);
+
+      // If file is not in local cache, fetch it from server
+      if (!file) {
+        try {
+          file = await this.fetchHelper.getFileByUUID(attributeInstance.value);
+          // Store it in local cache for future use
+          this.metaUtility.setFile(attributeInstance.value, file);
+        } catch (error) {
+          this.logger.log(`Failed to download file: ${error}`, 'error');
+          return;
+        }
+      }
+
+      const url = URL.createObjectURL(file);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = file.name || 'download';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
     }
   }
 
@@ -219,6 +255,7 @@ export class AttributeWindow {
         //push table attribute table instances to array
         else {
           this.visible = true;
+          this.attributeInstanceTable['dialogRef'] = null;
           this.attributeInstanceTable.push(attributeInstanceFromArray);
           this.attributeTypesForTableAttributeInstances.push(attributeType);
         }
@@ -280,7 +317,6 @@ export class AttributeWindow {
 
     return Promise.resolve();
   }
-
 
   //this function handles the dialog used for reference fields. Since the dialog is used multiple times, it is called here with the right context
   async openDialog(dialog, attributeInstance) {
