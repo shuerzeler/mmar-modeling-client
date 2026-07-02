@@ -4,7 +4,7 @@
 <mdc-dialog-content >
     <!-- File Upload -->
     <h3>Upload Event Log</h3>
-    <input type="file" accept=".csv,.xes" change.trigger="onFileChange($event)">
+    <input type="file" accept=".csv,.xes" ref="fileInput" change.trigger="onFileChange($event)">
  
     <!-- Algorithm Selection -->
     <h3>Algorithm</h3>
@@ -19,14 +19,27 @@
     </mdc-select>
  
     <!-- CSV Column Mapping — only shown for CSV files -->
-    <div if.bind="isCsv">
+    <div if.bind="isCsv && csvColumns.length > 0">
         <hr style="border: 0.5px solid; color: #000000;">
         <h3>CSV Column Mapping</h3>
-        <mdc-text-field label="Case ID column" value.bind="caseId" style="display: flex;"></mdc-text-field>
-        <br>
-        <mdc-text-field label="Activity Name column" value.bind="activityName" style="display: flex;"></mdc-text-field>
-        <br>
-        <mdc-text-field label="Timestamp column" value.bind="timestamp" style="display: flex;"></mdc-text-field>
+    
+        <label style="font-size: 12px; color: #666;">Case ID column</label>
+        <select value.bind="caseId" style="display: block; width: 100%; padding: 8px; margin-bottom: 16px; border: 1px solid #ccc; border-radius: 4px; font-size: 16px;">
+            <option value="">-- select --</option>
+            <option repeat.for="col of csvColumns" value.bind="col">${col}</option>
+        </select>
+
+        <label style="font-size: 12px; color: #666;">Activity Name column</label>
+        <select value.bind="activityName" style="display: block; width: 100%; padding: 8px; margin-bottom: 16px; border: 1px solid #ccc; border-radius: 4px; font-size: 16px;">
+            <option value="">-- select --</option>
+            <option repeat.for="col of csvColumns" value.bind="col">${col}</option>
+        </select>
+
+        <label style="font-size: 12px; color: #666;">Timestamp column</label>
+        <select value.bind="timestamp" style="display: block; width: 100%; padding: 8px; margin-bottom: 16px; border: 1px solid #ccc; border-radius: 4px; font-size: 16px;">
+            <option value="">-- select --</option>
+            <option repeat.for="col of csvColumns" value.bind="col">${col}</option>
+        </select>
     </div>
     <!-- Line -->
     <hr style="border: 0.5px solid; color: #000000;">

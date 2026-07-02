@@ -14,6 +14,9 @@ export class DialogProcessMining {
     statusColor: string = "black";
  
     private selectedFile: File | null = null;
+
+    csvColumns: string[] = [];
+    fileInput: HTMLInputElement | null = null;
  
     constructor(
         private eventAggregator: EventAggregator,
@@ -25,6 +28,9 @@ export class DialogProcessMining {
             this.statusMessage = "";
             this.selectedFile = null;
             this.isCsv = false;
+            this.csvColumns = [];
+            this.algorithmChoice = "inductive";
+            if (this.fileInput) this.fileInput.value = "";
         });
     }
  
@@ -33,6 +39,18 @@ export class DialogProcessMining {
         if (input.files && input.files.length > 0) {
             this.selectedFile = input.files[0];
             this.isCsv = this.selectedFile.name.toLowerCase().endsWith(".csv");
+        
+            if (this.isCsv) {
+                // Read just the first line to get headers
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    if (!e.target?.result) return;
+                    const firstLine = (e.target.result as string).split('\n')[0];
+                    const delimiter = firstLine.includes(';') ? ';' : firstLine.includes('\t') ? '\t' : ',';
+                    this.csvColumns = firstLine.split(delimiter).map(col => col.trim().replace(/"/g, ''));
+                };
+                reader.readAsText(this.selectedFile);
+            }
         }
     }
  
