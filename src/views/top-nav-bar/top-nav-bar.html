@@ -15,6 +15,7 @@
         <menu-entry menu-entry.bind="editMenu"></menu-entry>
         <menu-entry menu-entry.bind="diagramMenu"></menu-entry>
         <menu-entry menu-entry.bind="settingsMenu"></menu-entry>
+        <menu-entry menu-entry.bind="processMiningMenu"></menu-entry>
 
         <!-- Open Dialog for Algorithms -->
         <button mdc-button mdc-tooltipp="Algorithms"
@@ -26,7 +27,12 @@
         <!-- menu entry for Simulation Mode -->
         <menu-entry menu-entry.bind="simulationMenu"></menu-entry>
 
-
+        <!-- Open Dialog for Process Mining -->
+        <button mdc-button mdc-tooltipp="Process Mining"
+          click.trigger="dialogHelper.openDialog(dialogProcessMining, 'openProcessMiningDialog', {})">
+          <mdc-icon>analytics</mdc-icon>Process Mining
+        </button>
+        <!-- End Dialog for Process Mining -->
 
       </mdc-top-app-bar-section>
 
@@ -44,6 +50,11 @@
    <!-- This is initialized here and in the menus (here to call by ctrl+s keys) -->
   <mdc-dialog view-model.ref="dialogSaveAs">
     <dialog-save-as></dialog-save-as>
+  </mdc-dialog>
+
+  <!-- Dialog for Process Mining -->
+  <mdc-dialog view-model.ref="dialogProcessMining">
+    <dialog-algorithm></dialog-algorithm>
   </mdc-dialog>
 
 </div>

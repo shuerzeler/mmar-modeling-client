@@ -178,5 +178,12 @@ export class TopNavBar {
             disabled: false
          }
       ]
+   };
+
+   processMiningMenu = {
+      name: "Process Mining",
+      icon: "analytics",
+      open: false,
+      item: []
    }
 }
