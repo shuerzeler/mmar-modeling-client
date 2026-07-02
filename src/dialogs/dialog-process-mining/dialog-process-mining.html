@@ -1,0 +1,42 @@
+<mdc-dialog-title>
+    Choose your algorithm:
+</mdc-dialog-title>
+<mdc-dialog-content >
+    <!-- File Upload -->
+    <h3>Upload Event Log</h3>
+    <input type="file" accept=".csv,.xes" change.trigger="onFileChange($event)">
+ 
+    <!-- Algorithm Selection -->
+    <h3>Algorithm</h3>
+    <mdc-select label="Select algorithm." value.bind="algorithmChoice" required style="display: flex;">
+        <mdc-list style="width: 100%;">
+            <mdc-list-item></mdc-list-item>
+            <mdc-list-item value="alpha">Alpha Miner → Petri Net</mdc-list-item>
+            <mdc-list-item value="inductive">Inductive Miner → Petri Net</mdc-list-item>
+            <mdc-list-item value="heuristic">Heuristic Miner → Petri Net</mdc-list-item>
+            <mdc-list-item value="bpmn_inductive">Inductive Miner → BPMN</mdc-list-item>
+        </mdc-list>
+    </mdc-select>
+ 
+    <!-- CSV Column Mapping — only shown for CSV files -->
+    <div if.bind="isCsv">
+        <hr style="border: 0.5px solid; color: #000000;">
+        <h3>CSV Column Mapping</h3>
+        <mdc-text-field label="Case ID column" value.bind="caseId" style="display: flex;"></mdc-text-field>
+        <br>
+        <mdc-text-field label="Activity Name column" value.bind="activityName" style="display: flex;"></mdc-text-field>
+        <br>
+        <mdc-text-field label="Timestamp column" value.bind="timestamp" style="display: flex;"></mdc-text-field>
+    </div>
+    <!-- Line -->
+    <hr style="border: 0.5px solid; color: #000000;">
+
+    <p if.bind="statusMessage" css="color: ${statusColor};">${statusMessage}</p>
+
+</mdc-dialog-content>
+<mdc-dialog-actions style="justify-content: space-between;">
+    <button mdc-button data-mdc-dialog-action="cancel">Close</button>
+    <mdc-button outlined click.trigger="runProcessMining()">
+        <mdc-icon>account_tree</mdc-icon> Run
+    </mdc-button>
+</mdc-dialog-actions>

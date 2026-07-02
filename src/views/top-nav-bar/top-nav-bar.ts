@@ -182,7 +182,7 @@ export class TopNavBar {
 
    processMiningMenu = {
       name: "Process Mining",
-      icon: "analytics",
+      icon: "hub",
       open: false,
       item: []
    }

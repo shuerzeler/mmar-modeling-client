@@ -1,6 +1,7 @@
 <import from="../menu-entry/menu-entry"></import>
 <import from="../../dialogs/dialog-algorithm/dialog-algorithm"></import>
 <import from="../../dialogs/dialog-save-as/dialog-save-as"></import>
+<import from="../../dialogs/dialog-process-mining/dialog-process-mining"></import>
 
 <div>
   <mdc-top-app-bar style="position: relative; background: transparent; color: #000;  z-index: 2;">
@@ -15,7 +16,6 @@
         <menu-entry menu-entry.bind="editMenu"></menu-entry>
         <menu-entry menu-entry.bind="diagramMenu"></menu-entry>
         <menu-entry menu-entry.bind="settingsMenu"></menu-entry>
-        <menu-entry menu-entry.bind="processMiningMenu"></menu-entry>
 
         <!-- Open Dialog for Algorithms -->
         <button mdc-button mdc-tooltipp="Algorithms"
@@ -30,7 +30,7 @@
         <!-- Open Dialog for Process Mining -->
         <button mdc-button mdc-tooltipp="Process Mining"
           click.trigger="dialogHelper.openDialog(dialogProcessMining, 'openProcessMiningDialog', {})">
-          <mdc-icon>analytics</mdc-icon>Process Mining
+          <mdc-icon>hub</mdc-icon>Process Mining
         </button>
         <!-- End Dialog for Process Mining -->
 
@@ -54,7 +54,7 @@
 
   <!-- Dialog for Process Mining -->
   <mdc-dialog view-model.ref="dialogProcessMining">
-    <dialog-algorithm></dialog-algorithm>
+    <dialog-process-mining></dialog-process-mining>
   </mdc-dialog>
 
 </div>
