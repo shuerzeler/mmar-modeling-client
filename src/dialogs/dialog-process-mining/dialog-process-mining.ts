@@ -73,11 +73,11 @@ export class DialogProcessMining {
             const formData = new FormData();
             formData.append("file", this.selectedFile);
  
-            // Append CSV column mapping if needed
+            // Append CSV column mapping
             if (this.isCsv) {
-                formData.append("case_id", this.caseId);
-                formData.append("activity_name", this.activityName);
-                formData.append("timestamp", this.timestamp);
+                formData.append("case_id", this.caseId || "case:concept:name");
+                formData.append("activity_name", this.activityName || "concept:name");
+                formData.append("timestamp", this.timestamp || "time:timestamp");
             }
  
             const response = await fetch(
