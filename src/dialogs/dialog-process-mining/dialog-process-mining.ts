@@ -12,6 +12,8 @@ export class DialogProcessMining {
     timestamp: string = "time:timestamp";
     statusMessage: string = "";
     statusColor: string = "black";
+
+    isRunning: boolean = false;
  
     private selectedFile: File | null = null;
 
@@ -31,6 +33,9 @@ export class DialogProcessMining {
             this.csvColumns = [];
             this.algorithmChoice = "inductive";
             if (this.fileInput) this.fileInput.value = "";
+            this.caseId = "case:concept:name";
+            this.activityName = "concept:name";
+            this.timestamp = "time:timestamp";
         });
     }
  
@@ -41,7 +46,7 @@ export class DialogProcessMining {
             this.isCsv = this.selectedFile.name.toLowerCase().endsWith(".csv");
         
             if (this.isCsv) {
-                // Read just the first line to get headers
+                // Read just the first line to get headers for column mapping
                 const reader = new FileReader();
                 reader.onload = (e) => {
                     if (!e.target?.result) return;
@@ -55,17 +60,28 @@ export class DialogProcessMining {
     }
  
     async runProcessMining() {
+        // Validate user input
+
+        // Check if a file is selected
         if (!this.selectedFile) {
             this.statusMessage = "Please select a file first.";
             this.statusColor = "red";
             return;
         }
+        // Check if algorithm is selected; should always be true, due to default
         if (!this.algorithmChoice) {
             this.statusMessage = "Please select an algorithm.";
             this.statusColor = "red";
             return;
         }
- 
+        //Check if column mapping is selected for .csv files
+        if (this.isCsv && (!this.caseId || !this.activityName || !this.timestamp)) {
+            this.statusMessage = "Please map all CSV columns before running.";
+            this.statusColor = "red";
+            return;
+        }
+
+        this.isRunning = true;
         this.statusMessage = "Running...";
         this.statusColor = "black";
  
@@ -73,19 +89,14 @@ export class DialogProcessMining {
             const formData = new FormData();
             formData.append("file", this.selectedFile);
  
-            // check is column mapping is filled
             if (this.isCsv) {
-                if (!this.caseId || !this.activityName || !this.timestamp) {
-                    this.statusMessage = "Please map all CSV columns before running.";
-                    this.statusColor = "red";
-                return;
-                }
-                // Append CSV column mapping
+                // Append CSV column mapping to formData
                 formData.append("case_id", this.caseId);
                 formData.append("activity_name", this.activityName);
                 formData.append("timestamp", this.timestamp);
             }
- 
+            
+            // request
             const response = await fetch(
                 `http://localhost:8001/run?algorithm=${this.algorithmChoice}`,
                 {
@@ -100,16 +111,16 @@ export class DialogProcessMining {
                 this.statusColor = "red";
                 return;
             }
- 
-            this.statusMessage = "Success! Model saved. Reload the scene list to see it.";
+            
+            // User message to reload page
+            this.statusMessage = "Success! Model saved. Reload the site to see it.";
             this.statusColor = "green";
- 
-            // Notify the rest of the app to refresh the scene list
-            this.eventAggregator.publish("processMiningCompleted", {});
  
         } catch (e: any) {
             this.statusMessage = `Request failed: ${e.message}`;
             this.statusColor = "red";
+        } finally{
+            this.isRunning = false;
         }
     }
 }

@@ -179,11 +179,4 @@ export class TopNavBar {
          }
       ]
    };
-
-   processMiningMenu = {
-      name: "Process Mining",
-      icon: "hub",
-      open: false,
-      item: []
-   }
 }

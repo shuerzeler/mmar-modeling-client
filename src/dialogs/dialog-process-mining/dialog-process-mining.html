@@ -1,7 +1,7 @@
 <mdc-dialog-title>
-    Choose your algorithm:
+    Process Mining
 </mdc-dialog-title>
-<mdc-dialog-content >
+<mdc-dialog-content>
     <!-- File Upload -->
     <h3>Upload Event Log</h3>
     <input type="file" accept=".csv,.xes" ref="fileInput" change.trigger="onFileChange($event)">
@@ -40,16 +40,17 @@
             <option value="">-- select --</option>
             <option repeat.for="col of csvColumns" value.bind="col">${col}</option>
         </select>
+        <!-- Line -->
+        <hr style="border: 0.5px solid; color: #000000;">
     </div>
-    <!-- Line -->
-    <hr style="border: 0.5px solid; color: #000000;">
+    
 
     <p if.bind="statusMessage" css="color: ${statusColor};">${statusMessage}</p>
 
 </mdc-dialog-content>
 <mdc-dialog-actions style="justify-content: space-between;">
     <button mdc-button data-mdc-dialog-action="cancel">Close</button>
-    <mdc-button outlined click.trigger="runProcessMining()">
+    <mdc-button outlined click.trigger="runProcessMining()" disabled.bind="isRunning">
         <mdc-icon>account_tree</mdc-icon> Run
     </mdc-button>
 </mdc-dialog-actions>
