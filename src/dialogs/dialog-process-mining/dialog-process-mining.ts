@@ -31,7 +31,6 @@ export class DialogProcessMining {
             this.selectedFile = null;
             this.isCsv = false;
             this.csvColumns = [];
-            this.algorithmChoice = "inductive";
             if (this.fileInput) this.fileInput.value = "";
             this.caseId = "case:concept:name";
             this.activityName = "concept:name";
